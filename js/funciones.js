@@ -8,7 +8,7 @@ const verificarCarrito = () => {
     }
 }
 
-const obtenerPrecioTotal = () => {
+const obtenerPrecioTotal = (carrito) => {
     let total = 0;
     carrito.forEach((producto) => {
         total = total + producto.precio * producto.cantidad
@@ -113,7 +113,7 @@ const renderizarListasCarrito = () => {
     <h4>Total</h4>
     </div>
     <div class="col-2 align-self-center">
-    <h4>$${obtenerPrecioTotal()}</h4>
+    <h4>$${obtenerPrecioTotal(carrito)}</h4>
     </div>
     `
     listaCarrito.append(divTotal)
