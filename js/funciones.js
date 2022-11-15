@@ -81,6 +81,7 @@ const renderizarListasCarrito = () => {
     carrito.forEach((producto) => {
         const nuevaCard = document.createElement('div')
         nuevaCard.className = "row d-flex"
+        nuevaCard.id = `productoId-${producto.id}`
         nuevaCard.innerHTML = `
         <div class="col-2 p-3">
         <img class="imgA" src="${producto.imgSrc}">
@@ -90,16 +91,20 @@ const renderizarListasCarrito = () => {
     </div>
     <div class="col-3 align-self-center">
         <div class="btn-group" role="group" aria-label="Basic button group">
-            <button type="button" class="btn btn-primary">-</button>
-            <button type="button" class="btn btn-primary">${producto.cantidad}</button>
-            <button type="button" class="btn btn-primary">+</button>
+            <button type="button" id="restarCarrito-${producto.id}" class="btn btn-primary">-</button>
+            <button type="button" id="cantidadProducto-${producto.id}" class="btn btn-primary">${producto.cantidad}</button>
+            <button type="button"id="sumarCarrito-${producto.id}" class="btn btn-primary">+</button>
         </div>
     </div>
     <div class="col-2 align-self-center">
-        <h5>$${producto.precio * producto.cantidad}</h5>
+        <h5 id="precioProducto-${producto.id}">$${producto.precio * producto.cantidad}</h5>
     </div>
         `
         listaCarrito.append(nuevaCard)
+        const restarCarrito = document.querySelector(`#restarCarrito-${producto.id}`)
+        restarCarrito.addEventListener('click',() => restarProducto(producto.id))
+        const sumarCarrito = document.querySelector(`#sumarCarrito-${producto.id}`)
+        sumarCarrito.addEventListener('click',() => sumarProducto(producto.id))
     })
     const divTotal = document.createElement('div')
     divTotal.className = "row d-flex"
@@ -109,7 +114,7 @@ const renderizarListasCarrito = () => {
     <h4>Total</h4>
     </div>
     <div class="col-2 align-self-center">
-    <h4>$${obtenerPrecioTotal(carrito)}</h4>
+    <h4 id="totalProducto">$${obtenerPrecioTotal(carrito)}</h4>
     </div>
     `
     const divCompra = document.createElement('div')
@@ -132,17 +137,35 @@ const eliminarCarrito = () => {
 
 
 const sumarProducto = (id) => {
-    carrito.map((producto) => {
+    carrito = carrito.map((producto) => {
         if (producto.id == id) {
             producto.cantidad++
+            document.querySelector(`#cantidadProducto-${producto.id}`).innerHTML = producto.cantidad
+            document.querySelector(`#precioProducto-${producto.id}`).innerHTML = `$${producto.precio * producto.cantidad}`
         }
+        return producto
     })
+    localStorage.setItem('carrito', JSON.stringify(carrito))
+    verificarCarrito()
+    document.querySelector(`#totalProducto`).innerHTML = `$${obtenerPrecioTotal(carrito)}`
+
 }
 
 const restarProducto = (id) => {
-    carrito.map((producto) => {
+    carrito = carrito.map((producto) => {
         if (producto.id == id) {
             producto.cantidad--
+            document.querySelector(`#cantidadProducto-${producto.id}`).innerHTML = producto.cantidad
+            document.querySelector(`#precioProducto-${producto.id}`).innerHTML = `$${producto.precio * producto.cantidad}`
         }
+        if (producto.cantidad == 0){
+            document.querySelector(`#productoId-${producto.id}`).remove()
+        }
+        return producto       
     })
+    carrito = carrito.filter(producto => producto.cantidad > 0)
+    localStorage.setItem('carrito', JSON.stringify(carrito))
+    verificarCarrito()
+    document.querySelector(`#totalProducto`).innerHTML = `$${obtenerPrecioTotal(carrito)}`
+
 }
