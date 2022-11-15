@@ -25,14 +25,52 @@
             </button>
             <div class="collapse navbar-collapse d-lg-flex justify-content-end" id="navbarHeader">
                 <div class="navbar-nav">
-                <a class="nav-link active" aria-current="page" href="page/carrito.html"><img class="centrarIMG" src="../assets/img/compras.png"></a>
-                <span id="cantidadProducto" class="text-light btn-danger carritoCantidad d-none"></span>
+                    <a class="nav-link active" aria-current="page" href="page/carrito.html"><img class="centrarIMG"
+                            src="../assets/img/compras.png"></a>
+                    <span id="cantidadProducto" class="text-light btn-danger carritoCantidad d-none"></span>
+                </div>
             </div>
-        </div>
     </nav>
     <main id="listaCarrito" class="container">
+        <!-- renderizado en js -->
     </main>
-
+    <!-- Modal -->
+    <div class="modal fade" id="confirmacionCompra" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Finalizar Compra</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <label for="inputNombre" class="form-label">Nombre Completo (como aparece en la tarjeta)</label>
+                        <input type="text" class="form-control" id="inputNombre" placeholder="Jose Carlos Del Monte">
+                        <label for="inputTarjeta" class="form-label">Numero de Tarjeta</label>
+                        <input type="text" class="form-control" pattern="[0-9]" id="inputTarjeta"
+                            placeholder="xxxx xxxx xxxx xxxx">
+                        <div class="row">
+                            <div class="col">
+                                <label for="inputCodigo" class="form-label">Codigo de Seguridad</label>
+                                <input type="text" class="form-control" pattern="[0-9]" id="inputCodigo"
+                                    placeholder="xxx">
+                            </div>
+                            <div class="col">
+                                <label for="inputVencimiento" class="form-label">Fecha de expiracion</label>
+                                <input type="text" pattern="[0-9]{2}//[0-9]{2}" class="form-control"
+                                    id="inputVencimiento" placeholder="06/25">
+                            </div>
+                        </div>
+                        <div class="modal-footer mt-3">
+                            <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-danger" id="botonFinalizarCompra">Finalizar la Compra</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 

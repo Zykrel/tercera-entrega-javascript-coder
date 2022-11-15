@@ -30,12 +30,9 @@ const agregarProductoAlCarrito = (e) => {
     const idProductoElegido = e.target.getAttribute('data-id')
     const productoElegido = placares.find((producto) => producto.id == idProductoElegido)
     if (carrito.find((producto) => producto.id == idProductoElegido) == undefined) {
-        console.log('entro al if')
         productoElegido.cantidad = 1
         carrito.push(productoElegido)
     } else {
-        console.log('entro al else')
-
         carrito.map((producto) => {
             if (producto.id == productoElegido.id) {
                 producto.cantidad++
@@ -80,7 +77,6 @@ const renderizarProductos = () => {
     })
 }
 
-
 const renderizarListasCarrito = () => {
     carrito.forEach((producto) => {
         const nuevaCard = document.createElement('div')
@@ -116,5 +112,37 @@ const renderizarListasCarrito = () => {
     <h4>$${obtenerPrecioTotal(carrito)}</h4>
     </div>
     `
+    const divCompra = document.createElement('div')
+    divCompra.className = "row d-flex"
+    divCompra.innerHTML = `
+    <div class="col-4 offset-5 align-self-center mb-5">
+        <button type="button" id="botonCompra" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmacionCompra">Finalizar Compra</button>
+    </div>
+    `
     listaCarrito.append(divTotal)
+    listaCarrito.append(divCompra)
+    const botonCompra = document.querySelector('#botonFinalizarCompra')
+    botonCompra.addEventListener('click', eliminarCarrito)
+}
+
+const eliminarCarrito = () => {
+    carrito = []
+    localStorage.removeItem('carrito')
+}
+
+
+const sumarProducto = (id) => {
+    carrito.map((producto) => {
+        if (producto.id == id) {
+            producto.cantidad++
+        }
+    })
+}
+
+const restarProducto = (id) => {
+    carrito.map((producto) => {
+        if (producto.id == id) {
+            producto.cantidad--
+        }
+    })
 }
