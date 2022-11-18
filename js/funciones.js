@@ -41,6 +41,7 @@ const agregarProductoAlCarrito = (e) => {
     }
     localStorage.setItem('carrito', JSON.stringify(carrito))
     verificarCarrito()
+    mostrarToast('Producto añadido al carrito')
 }
 const renderizarProductos = () => {
     let contador = 0;
@@ -78,11 +79,22 @@ const renderizarProductos = () => {
 }
 
 const renderizarListasCarrito = () => {
-    carrito.forEach((producto) => {
-        const nuevaCard = document.createElement('div')
-        nuevaCard.className = "row d-flex"
-        nuevaCard.id = `productoId-${producto.id}`
-        nuevaCard.innerHTML = `
+    if (carrito.length == 0) {
+        const cartelDeCarrito = document.createElement('div')
+        cartelDeCarrito.className = "row"
+        cartelDeCarrito.innerHTML = `
+        <div class="col-12">
+        <h1 class="text-center mt-3">
+        Tu carrito esta vacio!
+        </h1>
+        </div>`
+        listaCarrito.append(cartelDeCarrito)
+    } else {
+        carrito.forEach((producto) => {
+            const nuevaCard = document.createElement('div')
+            nuevaCard.className = "row d-flex"
+            nuevaCard.id = `productoId-${producto.id}`
+            nuevaCard.innerHTML = `
         <div class="col-2 p-3">
         <img class="imgA" src="${producto.imgSrc}">
     </div>
@@ -100,15 +112,15 @@ const renderizarListasCarrito = () => {
         <h5 id="precioProducto-${producto.id}">$${producto.precio * producto.cantidad}</h5>
     </div>
         `
-        listaCarrito.append(nuevaCard)
-        const restarCarrito = document.querySelector(`#restarCarrito-${producto.id}`)
-        restarCarrito.addEventListener('click',() => restarProducto(producto.id))
-        const sumarCarrito = document.querySelector(`#sumarCarrito-${producto.id}`)
-        sumarCarrito.addEventListener('click',() => sumarProducto(producto.id))
-    })
-    const divTotal = document.createElement('div')
-    divTotal.className = "row d-flex"
-    divTotal.innerHTML = `
+            listaCarrito.append(nuevaCard)
+            const restarCarrito = document.querySelector(`#restarCarrito-${producto.id}`)
+            restarCarrito.addEventListener('click', () => restarProducto(producto.id))
+            const sumarCarrito = document.querySelector(`#sumarCarrito-${producto.id}`)
+            sumarCarrito.addEventListener('click', () => sumarProducto(producto.id))
+        })
+        const divTotal = document.createElement('div')
+        divTotal.className = "row d-flex"
+        divTotal.innerHTML = `
     <hr>
     <div class="offset-7 col-2 align-self-center">
     <h4>Total</h4>
@@ -117,18 +129,67 @@ const renderizarListasCarrito = () => {
     <h4 id="totalProducto">$${obtenerPrecioTotal(carrito)}</h4>
     </div>
     `
-    const divCompra = document.createElement('div')
-    divCompra.className = "row d-flex"
-    divCompra.innerHTML = `
+        const divCompra = document.createElement('div')
+        divCompra.className = "row d-flex"
+        divCompra.innerHTML = `
     <div class="col-4 offset-5 align-self-center mb-5">
         <button type="button" id="botonCompra" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmacionCompra">Finalizar Compra</button>
     </div>
     `
-    listaCarrito.append(divTotal)
-    listaCarrito.append(divCompra)
-    const botonCompra = document.querySelector('#botonFinalizarCompra')
-    botonCompra.addEventListener('click', eliminarCarrito)
+        listaCarrito.append(divTotal)
+        listaCarrito.append(divCompra)
+        const botonCompra = document.querySelector('#botonFinalizarCompra')
+        botonCompra.addEventListener('click', finalizarCompra)
+    }
 }
+
+const mostrarToast = (texto) => {
+    Toastify({
+        text: texto,
+        duration: 1000,
+        close: false,
+        gravity: "top",
+        position: "right",
+        stopOnFocus: true,
+        style: {
+            background: "#eee",
+            color: "#bb2d3b"
+        },
+        onClick: function () {} 
+    }).showToast();
+}
+
+const finalizarCompra = () => {
+    let timerInterval
+    Swal.fire({
+        title: 'Compra en curso...',
+        html: 'Realizando compra, espere por favor',
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: () => {
+            Swal.showLoading()
+            timerInterval = setInterval(() => {
+            }, 3000)
+        },
+        willClose: () => {
+            clearInterval(timerInterval)
+        }
+    }).then((result) => {
+        eliminarCarrito();
+        Swal.fire({
+            title:'Compra realizada',
+            text:'Gracias por confiar!',
+            icon: 'success',
+            confirmButtonText: '<span class="text-danger">Ok</span>',
+            confirmButtonColor : "#fff"
+        }).then(() => {
+            location.href = '../index.html'
+        })
+    }
+    )
+}
+
+
 
 const eliminarCarrito = () => {
     carrito = []
@@ -158,10 +219,10 @@ const restarProducto = (id) => {
             document.querySelector(`#cantidadProducto-${producto.id}`).innerHTML = producto.cantidad
             document.querySelector(`#precioProducto-${producto.id}`).innerHTML = `$${producto.precio * producto.cantidad}`
         }
-        if (producto.cantidad == 0){
+        if (producto.cantidad == 0) {
             document.querySelector(`#productoId-${producto.id}`).remove()
         }
-        return producto       
+        return producto
     })
     carrito = carrito.filter(producto => producto.cantidad > 0)
     localStorage.setItem('carrito', JSON.stringify(carrito))
