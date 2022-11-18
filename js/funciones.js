@@ -164,12 +164,12 @@ const finalizarCompra = () => {
     Swal.fire({
         title: 'Compra en curso...',
         html: 'Realizando compra, espere por favor',
-        timer: 3000,
+        timer: 2000,
         timerProgressBar: true,
         didOpen: () => {
             Swal.showLoading()
             timerInterval = setInterval(() => {
-            }, 3000)
+            }, 2000)
         },
         willClose: () => {
             clearInterval(timerInterval)
