@@ -1,3 +1,5 @@
+let placares = []
+
 //funciones
 const verificarCarrito = () => {
     if (localStorage.getItem('carrito')) {
@@ -43,11 +45,11 @@ const agregarProductoAlCarrito = (e) => {
     verificarCarrito()
     mostrarToast('Producto añadido al carrito')
 }
-const renderizarProductos = () => {
+const renderizarProductos = (productos) => {
     let contador = 0;
     let row;
     let divAux = document.createElement('div')
-    placares.forEach((producto) => {
+    productos.forEach((producto) => {
         if (contador == 0 || contador % 3 == 0) {
             const rowAux = document.createElement('div')
             rowAux.className = 'row my-3'
@@ -189,8 +191,6 @@ const finalizarCompra = () => {
     )
 }
 
-
-
 const eliminarCarrito = () => {
     carrito = []
     localStorage.removeItem('carrito')
@@ -230,3 +230,11 @@ const restarProducto = (id) => {
     document.querySelector(`#totalProducto`).innerHTML = `$${obtenerPrecioTotal(carrito)}`
 
 }
+
+
+const traerProductos = async () => {
+    const res = await fetch('../json/data.json')
+    const data =  await res.json()
+    return data
+}
+

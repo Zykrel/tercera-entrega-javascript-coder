@@ -1,9 +1,13 @@
 //Variables
-let carrito
+let carrito = []
 
 //selectores
 const mainContainer = document.querySelector('#mainContainer')
 
 //ejecucion
 verificarCarrito()
-renderizarProductos()
+traerProductos().then((res) =>{
+    placares = res
+    renderizarProductos(res);
+})
+
