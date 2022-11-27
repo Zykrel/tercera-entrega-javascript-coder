@@ -44,17 +44,21 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="javascript:void(0);">
+                    <form id="formulario">
+                        <div class="imagenTexto">
+                            <img class="imagenTexto" src="../assets/img/tarjeta.png" id="verTarjeta">
+                            <p id="numeroImagen"></p>
+                            <p id="expiracionDesdeImagen"></p>
+                            <p id="nombreImagen"></p>
+                        </div>
                         <label for="inputNombre" class="form-label">Nombre Completo (como aparece en la tarjeta)</label>
                         <input type="text" class="form-control" id="inputNombre" placeholder="Jose Carlos Del Monte">
                         <label for="inputTarjeta" class="form-label">Numero de Tarjeta</label>
-                        <input type="text" class="form-control" pattern="[0-9]" id="inputTarjeta"
-                            placeholder="xxxx xxxx xxxx xxxx">
+                        <input type="text" class="form-control" id="inputTarjeta" placeholder="xxxx xxxx xxxx xxxx">
                         <div class="row">
                             <div class="col">
-                                <label for="inputCodigo" class="form-label">Codigo de Seguridad</label>
-                                <input type="text" class="form-control" pattern="[0-9]" id="inputCodigo"
-                                    placeholder="xxx">
+                                <label for="inputCodigo" class="form-label" id="codigoTxt">Codigo de Seguridad</label>
+                                <input type="text" class="form-control" id="inputCodigo" placeholder="xxx">
                             </div>
                             <div class="col">
                                 <label for="inputVencimiento" class="form-label">Fecha de expiracion</label>
@@ -64,7 +68,8 @@
                         </div>
                         <div class="modal-footer mt-3">
                             <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-danger" data-bs-dismiss="modal" id="botonFinalizarCompra">Finalizar la
+                            <button type="submit" class="btn btn-danger" data-bs-dismiss="modal"
+                                id="botonFinalizarCompra">Finalizar la
                                 Compra</button>
                         </div>
                     </form>
@@ -141,7 +146,6 @@
         crossorigin="anonymous"></script>
 
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="../js/data.js"></script>
     <script src="../js/funciones.js"></script>
     <script src="../js/carrito.js"></script>
 </body>

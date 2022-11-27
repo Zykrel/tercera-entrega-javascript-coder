@@ -10,6 +10,7 @@ const verificarCarrito = () => {
     }
 }
 
+//Obtiene el precio total de forma dinamica
 const obtenerPrecioTotal = (carrito) => {
     let total = 0;
     carrito.forEach((producto) => {
@@ -18,7 +19,7 @@ const obtenerPrecioTotal = (carrito) => {
     return total;
 }
 
-
+//Actualiza constantemente al carrito
 const actualizarCarrito = () => {
     const cantidadProducto = document.querySelector('#cantidadProducto')
     let contador = 0;
@@ -28,6 +29,8 @@ const actualizarCarrito = () => {
     cantidadProducto.innerHTML = contador
     cantidadProducto.classList.remove("d-none")
 }
+
+//Agrega Productos en el carrito
 const agregarProductoAlCarrito = (e) => {
     const idProductoElegido = e.target.getAttribute('data-id')
     const productoElegido = placares.find((producto) => producto.id == idProductoElegido)
@@ -45,6 +48,8 @@ const agregarProductoAlCarrito = (e) => {
     verificarCarrito()
     mostrarToast('Producto añadido al carrito')
 }
+
+//Renderiza los productos en el Index
 const renderizarProductos = (productos) => {
     let contador = 0;
     let row;
@@ -80,6 +85,7 @@ const renderizarProductos = (productos) => {
     })
 }
 
+//Renderiza la lista de productos
 const renderizarListasCarrito = () => {
     if (carrito.length == 0) {
         const cartelDeCarrito = document.createElement('div')
@@ -134,17 +140,32 @@ const renderizarListasCarrito = () => {
         const divCompra = document.createElement('div')
         divCompra.className = "row d-flex"
         divCompra.innerHTML = `
-    <div class="col-4 offset-5 align-self-center mb-5">
+        <div class="col-3 mt-2">
+        <button type="button" class="btn btn-outline-danger mx-1" id="eliminarCarritoCompra">Eliminar Carrito</button>
+        </div>
+    <div class="col-4 offset-5 align-self-center mb-5 mt-2">
         <button type="button" id="botonCompra" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmacionCompra">Finalizar Compra</button>
     </div>
     `
         listaCarrito.append(divTotal)
         listaCarrito.append(divCompra)
+        //eventos en el modal
+        const botonEliminarCompra = document.querySelector('#eliminarCarritoCompra')
+        botonEliminarCompra.addEventListener('click', eliminarCarrito)
         const botonCompra = document.querySelector('#botonFinalizarCompra')
         botonCompra.addEventListener('click', finalizarCompra)
+        const inputTarjeta = document.querySelector('#inputTarjeta')
+        inputTarjeta.addEventListener('keyup', (e) => mostrarDatosEnTarjeta(e, '#numeroImagen'))
+        const inputNombre = document.querySelector('#inputNombre')
+        inputNombre.addEventListener('keyup', (e) => mostrarDatosEnTarjeta(e, '#nombreImagen'))
+        const inputVencimiento = document.querySelector('#inputVencimiento')
+        inputVencimiento.addEventListener('keyup', (e) => mostrarDatosEnTarjeta(e, '#expiracionDesdeImagen'))
+        const formulario = document.querySelector('#formulario')
+        formulario.addEventListener('submit', (e) => validarFormulario(e))
     }
 }
 
+//Alerta al agregar un producto al carrito
 const mostrarToast = (texto) => {
     Toastify({
         text: texto,
@@ -157,46 +178,56 @@ const mostrarToast = (texto) => {
             background: "#eee",
             color: "#bb2d3b"
         },
-        onClick: function () {} 
+        onClick: function () { }
     }).showToast();
 }
 
-const finalizarCompra = () => {
-    let timerInterval
-    Swal.fire({
-        title: 'Compra en curso...',
-        html: 'Realizando compra, espere por favor',
-        timer: 2000,
-        timerProgressBar: true,
-        didOpen: () => {
-            Swal.showLoading()
-            timerInterval = setInterval(() => {
-            }, 2000)
-        },
-        willClose: () => {
-            clearInterval(timerInterval)
-        }
-    }).then((result) => {
-        eliminarCarrito();
+//Alerta al finalizar la compra
+const finalizarCompra = (e) => {
+    if (validarFormulario(e)) {
+        let timerInterval
         Swal.fire({
-            title:'Compra realizada',
-            text:'Gracias por confiar!',
-            icon: 'success',
-            confirmButtonText: '<span class="text-danger">Ok</span>',
-            confirmButtonColor : "#fff"
-        }).then(() => {
-            location.href = '../index.html'
+            title: 'Compra en curso...',
+            html: 'Realizando compra, espere por favor',
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading()
+                timerInterval = setInterval(() => {
+                }, 2000)
+            },
+            willClose: () => {
+                clearInterval(timerInterval)
+            }
+        }).then((result) => {
+            Swal.fire({
+                title: 'Compra realizada',
+                text: 'Gracias por confiar!',
+                icon: 'success',
+                confirmButtonText: '<span class="text-danger">Ok</span>',
+                confirmButtonColor: "#fff"
+            }).then(() => {
+            eliminarCarrito();
+            })
+        }
+        )
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Se colocaron datos incorrectos!',
         })
     }
-    )
 }
 
+//elimina productos del carrito
 const eliminarCarrito = () => {
     carrito = []
     localStorage.removeItem('carrito')
+    location.href = '../index.html'
 }
 
-
+//suma la cantidad de productos
 const sumarProducto = (id) => {
     carrito = carrito.map((producto) => {
         if (producto.id == id) {
@@ -212,6 +243,7 @@ const sumarProducto = (id) => {
 
 }
 
+//resta la cantidad de productos
 const restarProducto = (id) => {
     carrito = carrito.map((producto) => {
         if (producto.id == id) {
@@ -231,10 +263,30 @@ const restarProducto = (id) => {
 
 }
 
-
+// Trae los productos desde un json
 const traerProductos = async () => {
     const res = await fetch('json/data.json')
-    const data =  await res.json()
+    const data = await res.json()
     return data
 }
 
+
+//Funciones de la tarjeta
+const mostrarDatosEnTarjeta = (e, id) => {
+    document.querySelector(id).innerHTML = `${e.target.value}`
+}
+
+//Funcion de formulario
+const validarFormulario = (e) => {
+    e.preventDefault();
+    const regNumerosTarjeta = new RegExp('([0-9]{16})')
+    const regVencimiento = new RegExp('([0-1]{1}[0-9]{1}\/[0-9]{2})')
+    const regCodigo = new RegExp('([0-9]{3})')
+    const inputTarjeta = document.querySelector('#inputTarjeta')
+    const inputNombre = document.querySelector('#inputNombre')
+    const inputVencimiento = document.querySelector('#inputVencimiento')
+    const inputCodigo = document.querySelector('#inputCodigo')
+    return (
+        regNumerosTarjeta.test(inputTarjeta.value) && (inputNombre.value.length > 4 && inputNombre.value.length < 26) && regVencimiento.test(inputVencimiento.value) && regCodigo.test(inputCodigo.value)
+        )
+}

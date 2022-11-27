@@ -34,3 +34,45 @@
 .imgA{
     width: 150px;
 }
+
+#verTarjeta{
+    width: 350px;
+    height: 200px;
+    margin-left: 50px;
+    filter: hue-rotate(225deg)
+}
+
+.imagenTexto{
+    display: block;
+    position: relative;		
+    width: 300px;
+}
+
+#numeroImagen{
+    display: block;
+    position: absolute;
+    bottom: 40px;
+    left: 86px;
+    padding: 5px;
+    width: 100%;
+    font-weight: 800;
+}
+
+#nombreImagen{
+    display: block;
+    position: absolute;
+    bottom: 1px;
+    left: 86px;
+    padding: 5px;
+    width: 100%;
+    text-transform: uppercase;
+}
+
+#expiracionDesdeImagen{
+    display: block;
+    position: absolute;
+    bottom: 18px;
+    left: 265px;
+    padding: 5px;
+    width: 100%;
+}
