@@ -1,4 +1,5 @@
 let placares = []
+let placaresFiltro = []
 
 //funciones
 const verificarCarrito = () => {
@@ -51,18 +52,30 @@ const agregarProductoAlCarrito = (e) => {
 
 //Renderiza los productos en el Index
 const renderizarProductos = (productos) => {
+    mainContainer.innerHTML = ``
     let contador = 0;
     let row;
     let divAux = document.createElement('div')
-    productos.forEach((producto) => {
-        if (contador == 0 || contador % 3 == 0) {
-            const rowAux = document.createElement('div')
-            rowAux.className = 'row my-3'
-            row = rowAux;
-        }
-        const nuevaCard = document.createElement('div')
-        nuevaCard.className = "col-lg-4 col-12"
-        nuevaCard.innerHTML = `
+    if (productos.length == 0) {
+        const cartelDelFiltro = document.createElement('div')
+        cartelDelFiltro.className = "row"
+        cartelDelFiltro.innerHTML = `
+        <div class="col-12">
+        <h1 class="text-center mt-3">
+        No se encuentran Productos!
+        </h1>
+        </div>`
+        mainContainer.append(cartelDelFiltro)
+    } else {
+        productos.forEach((producto) => {
+            if (contador == 0 || contador % 3 == 0) {
+                const rowAux = document.createElement('div')
+                rowAux.className = 'row my-3'
+                row = rowAux;
+            }
+            const nuevaCard = document.createElement('div')
+            nuevaCard.className = "col-lg-4 col-12"
+            nuevaCard.innerHTML = `
         <div class="card cards">
         <img src="${producto.imgSrc}" class="card-img-top" alt="card-img-top">
         <div class="card-body">
@@ -74,15 +87,16 @@ const renderizarProductos = (productos) => {
         </div>
         </div>
         `
-        row.append(nuevaCard)
-        divAux.append(row)
-        contador++
-    })
-    mainContainer.append(divAux)
-    const buttonsCTA = document.querySelectorAll('.buttonCTA')
-    buttonsCTA.forEach((button) => {
-        button.addEventListener('click', agregarProductoAlCarrito)
-    })
+            row.append(nuevaCard)
+            divAux.append(row)
+            contador++
+        })
+        mainContainer.append(divAux)
+        const buttonsCTA = document.querySelectorAll('.buttonCTA')
+        buttonsCTA.forEach((button) => {
+            button.addEventListener('click', agregarProductoAlCarrito)
+        })
+    }
 }
 
 //Renderiza la lista de productos
@@ -160,6 +174,7 @@ const renderizarListasCarrito = () => {
         inputNombre.addEventListener('keyup', (e) => mostrarDatosEnTarjeta(e, '#nombreImagen'))
         const inputVencimiento = document.querySelector('#inputVencimiento')
         inputVencimiento.addEventListener('keyup', (e) => mostrarDatosEnTarjeta(e, '#expiracionDesdeImagen'))
+        inputVencimiento.addEventListener('keydown', formatoVencimiento)
         const formulario = document.querySelector('#formulario')
         formulario.addEventListener('submit', (e) => validarFormulario(e))
     }
@@ -207,7 +222,7 @@ const finalizarCompra = (e) => {
                 confirmButtonText: '<span class="text-danger">Ok</span>',
                 confirmButtonColor: "#fff"
             }).then(() => {
-            eliminarCarrito();
+                eliminarCarrito();
             })
         }
         )
@@ -260,7 +275,9 @@ const restarProducto = (id) => {
     localStorage.setItem('carrito', JSON.stringify(carrito))
     verificarCarrito()
     document.querySelector(`#totalProducto`).innerHTML = `$${obtenerPrecioTotal(carrito)}`
-
+        if(carrito.length == 0){
+            eliminarCarrito()
+        }
 }
 
 // Trae los productos desde un json
@@ -276,7 +293,7 @@ const mostrarDatosEnTarjeta = (e, id) => {
     document.querySelector(id).innerHTML = `${e.target.value}`
 }
 
-//Funcion de formulario
+//Validacion de formulario con Regex
 const validarFormulario = (e) => {
     e.preventDefault();
     const regNumerosTarjeta = new RegExp('([0-9]{16})')
@@ -288,5 +305,53 @@ const validarFormulario = (e) => {
     const inputCodigo = document.querySelector('#inputCodigo')
     return (
         regNumerosTarjeta.test(inputTarjeta.value) && (inputNombre.value.length > 4 && inputNombre.value.length < 26) && regVencimiento.test(inputVencimiento.value) && regCodigo.test(inputCodigo.value)
-        )
+    )
+}
+
+//Filtro
+const filtrarProductosPorPrecio = () => {
+    let minimo = document.querySelector('#precioMinimo').value
+    let maximo = document.querySelector('#precioMaximo').value
+    if (minimo == "") {
+        minimo = 0
+    }
+    if (maximo == "") {
+        maximo = 9999999
+    }
+    if (minimo >= maximo) {
+        limpiarFiltroDePrecio()
+        return // Finaliza la funcion
+    }
+    placaresFiltro = placares.filter((placard) => placard.precio > minimo && placard.precio < maximo)
+    renderizarProductos(placaresFiltro)
+}
+
+
+//Limpiar filtro precio
+
+const limpiarFiltroDePrecio = () => {
+    renderizarProductos(placares)
+    document.querySelector('#precioMinimo').value = ""
+    document.querySelector('#precioMaximo').value = ""
+
+}
+
+
+//Limpiar Tarjeta
+
+const limpiarTarjeta = () =>{
+    document.querySelector('#nombreImagen').innerHTML = ``
+    document.querySelector('#expiracionDesdeImagen').innerHTML = ``
+    document.querySelector('#numeroImagen').innerHTML = ``
+}
+
+
+//Dar formato a fecha de vencimiento
+
+const formatoVencimiento = () =>{
+    const inputVencimiento = document.querySelector('#inputVencimiento')
+    if(inputVencimiento.value.length == 2 ){
+        inputVencimiento.value = inputVencimiento.value + '/'
+    }
+
 }

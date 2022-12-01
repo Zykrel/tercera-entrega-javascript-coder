@@ -52,22 +52,22 @@
                             <p id="nombreImagen"></p>
                         </div>
                         <label for="inputNombre" class="form-label">Nombre Completo (como aparece en la tarjeta)</label>
-                        <input type="text" class="form-control" id="inputNombre" placeholder="Jose Carlos Del Monte">
+                        <input type="text" class="form-control" minlength="5" maxlength="25" id="inputNombre" placeholder="Jose Carlos Del Monte">
                         <label for="inputTarjeta" class="form-label">Numero de Tarjeta</label>
-                        <input type="text" class="form-control" id="inputTarjeta" placeholder="xxxx xxxx xxxx xxxx">
+                        <input type="text" class="form-control" maxlength="16" id="inputTarjeta" placeholder="xxxx xxxx xxxx xxxx">
                         <div class="row">
                             <div class="col">
                                 <label for="inputCodigo" class="form-label" id="codigoTxt">Codigo de Seguridad</label>
-                                <input type="text" class="form-control" id="inputCodigo" placeholder="xxx">
+                                <input type="text" class="form-control" minlength="3" maxlength="3" id="inputCodigo" placeholder="xxx">
                             </div>
                             <div class="col">
                                 <label for="inputVencimiento" class="form-label">Fecha de expiracion</label>
-                                <input type="text" pattern="[0-9]{2}//[0-9]{2}" class="form-control"
+                                <input type="text" minlength="5" maxlength="5" class="form-control"
                                     id="inputVencimiento" placeholder="06/25">
                             </div>
                         </div>
                         <div class="modal-footer mt-3">
-                            <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="reset" class="btn btn-secondary" id="botonCancelarCompra" data-bs-dismiss="modal">Cancelar</button>
                             <button type="submit" class="btn btn-danger" data-bs-dismiss="modal"
                                 id="botonFinalizarCompra">Finalizar la
                                 Compra</button>
